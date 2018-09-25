@@ -1,0 +1,6 @@
+[package]
+name = "mud"
+version = "0.1.0"
+authors = ["Rebecca <rxs6737@rit.edu>"]
+
+[dependencies]
