@@ -24,29 +24,30 @@ fn main() {
 }
 
 fn handle_client(mut stream: TcpStream) {
-    let mut buffer = [0; 32];
+    let mut buffer = [0; 16];
     if let Err(_) = stream.write("Hello from Rust\n".as_bytes()) {
         return;
     }
     println!("connection accepted");
     loop{
+        if let Err(_) = stream.write("\n> ".as_bytes()){
+            return;
+        }
         if let Ok(read) = stream.read(&mut buffer){
             let s = String::from_utf8_lossy(&buffer);
-            //println!("{}",s);
+            println!("{}",s);
             if read == 0{
                 break;
             }
             let mut output = "";
             match s[0..read].trim(){
-                "a" => output = "Ayy\n",
+                "a" | "A"  => output = "Ayy\n",
                 "b" => output = "bark\n",
-                _ => output = s.trim(),
+                _ => output = &s[0..read],
             }
-            if let Err(_) = stream.write(output.as_bytes()){
+            if let Err(_) = stream.write_all(output.as_bytes()){
                     break;
                 }
-            
-
         }else{
             break;
         }
