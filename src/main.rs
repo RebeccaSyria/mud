@@ -2,9 +2,10 @@ use std::net::{TcpListener, TcpStream};
 use std::thread;
 use std::io::Read;
 use std::io::Write;
+mod room;
 
 fn main() {
-    let listener = TcpListener::bind("127.0.0.1:36201").unwrap();
+      let listener = TcpListener::bind("127.0.0.1:36201").unwrap();
 
     let addr = listener.local_addr()
         .expect("unable to get the local port?");
@@ -24,6 +25,8 @@ fn main() {
 }
 
 fn handle_client(mut stream: TcpStream) {
+      let room1 = room::make_room( "entrance".to_string(), "Welcome! This is an empty room!".to_string(), 0, "heyy".to_string());
+
     let mut buffer = [0; 16];
     if let Err(_) = stream.write("Hello from Rust\n".as_bytes()) {
         return;
@@ -43,6 +46,7 @@ fn handle_client(mut stream: TcpStream) {
             match s[0..read].trim(){
                 "a" | "A"  => output = "Ayy\n",
                 "b" => output = "bark\n",
+                "d" => output = room::get_room_description(&room1),
                 _ => output = &s[0..read],
             }
             if let Err(_) = stream.write_all(output.as_bytes()){
@@ -55,3 +59,4 @@ fn handle_client(mut stream: TcpStream) {
     println!("disconnected")
 
 }
+
